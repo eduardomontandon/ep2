@@ -32,9 +32,13 @@ def esta_na_lista(pais, lista):
 
 def sorteia_letra(palavra, lista):
     nova_palavra = ''
-    for i in palavra:
-        if i not in lista:
+    p = palavra.lower()
+    proibido = ['.', ',', '-', ';', ' ']
+    for i in p:
+        if i not in lista and i not in proibido:
             nova_palavra += i
+    if nova_palavra == '':
+        return ''
     return random.choice(nova_palavra)
 
 
