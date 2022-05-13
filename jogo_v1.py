@@ -37,7 +37,6 @@ for continente in DADOS:
 
 #LOOP
 while tentativas > 0:
-    print(cores_da_bandeira)
     if palpite not in dic_normalizado and palpite != 'dica':
         print('')
         print('país desconhecido')
@@ -45,8 +44,10 @@ while tentativas > 0:
         print('----------------------------------------\n 1. Cor da bandeira  - custa 4 tentativas\n 2. Letra da capital - custa 3 tentativas\n 3. Área             - custa 6 tentativas\n 4. População        - custa 5 tentativas\n 5. Continente       - custa 7 tentativas\n 0. Sem dica\n ----------------------------------------')
         dica_escolhida = int(input('Escolha sua opção [0|1|2|3|4|5]: '))
         print('Distâncias:\n\n Dicas:')
+    #DICA 0
         if dica_escolhida == 0:
             print('')
+    #DICA 1
         if dica_escolhida == 1:
             while dica_escolhida == 1:
                 if cores_da_bandeira == []:
@@ -62,14 +63,41 @@ while tentativas > 0:
                 tentativas -= 4 
                 print(f'Tentativas: {tentativas}')
                 break
+    #DICA 2
         if dica_escolhida == 2:
-            'sortear letras da capital'
+            for continente in DADOS:
+                for pais in DADOS[continente] :
+                    if pais == escolhido:
+                        capital = DADOS[continente][pais]["capital"]
+                        print(random.choice(capital))
+                        tentativas -= 3
+                        print(f'Tentativas: {tentativas}')
+    #DICA 3
         if dica_escolhida == 3:
-            'área do país'
+            for continente in DADOS:
+                for pais in DADOS[continente] :
+                    if pais == escolhido:
+                        print(DADOS[continente][pais]["area"])
+    #DICA 4
         if dica_escolhida == 4:
-            'população do país'
+            for continente in DADOS:
+                for pais in DADOS[continente] :
+                    if pais == escolhido:
+                        print(DADOS[continente][pais]["populacao"])
+    #DICA 5
         if dica_escolhida == 5:
-            'continente em que o país esta inserido'
+            for continente in DADOS:
+                for pais in DADOS[continente] :
+                    if pais == escolhido:
+                        print(continente)
+
     palpite = str(input('Qual seu palpite? ')).lower().strip()
 
-palpite = str(input('Qual seu palpite? ')).lower().strip()
+print('Suas tentativas acabaram :(')
+print(f'O país sorteado era {escolhido}\n')
+
+fim_jogo = str(input('Deseja jogar novamente? [s/n] '))
+if fim_jogo == 's':
+    'jogar denovo'
+if fim_jogo == 'n':
+    print('Até a próxima!')
