@@ -19,6 +19,7 @@ palpite = str(input('Qual seu palpite? ')).lower().strip()
 tentativas = 20
 cores_da_bandeira = []
 i = 0
+a = 0
 #FUNÇÕES
 dic_normalizado = normaliza(DADOS)
 escolhido = sorteia_pais(dic_normalizado)
@@ -34,6 +35,14 @@ if palpite == 'dica'.lower().strip():
         print('')
         palpite = str(input('Qual seu palpite? ')).lower().strip()
     if dica_escolhida == 1:
-        print(' falta a achar cor da bandeira do país escolhido')
+        'achar cor da bandeira'
+    if dica_escolhida == 2:
+        'sortear letras da capital'
+    if dica_escolhida == 3:
+        'área do país'
+    if dica_escolhida == 4:
+        'população do país'
+    if dica == 5:
+        'continente em que o país esta inserido'
 
 palpite = str(input('Qual seu palpite? ')).lower().strip()
