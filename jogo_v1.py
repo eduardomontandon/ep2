@@ -19,8 +19,8 @@ palpite = str(input('Qual seu palpite? ')).lower().strip()
 tentativas = 20
 cores_da_bandeira = []
 cores_usadas = []
-i = 0
-a = 0
+letras_capital = []
+proibido = ['.', ',', '-', ';', ' ']
 #FUNÇÕES
 dic_normalizado = normaliza(DADOS)
 escolhido = sorteia_pais(dic_normalizado)
@@ -35,6 +35,62 @@ for continente in DADOS:
                                 if cor != 'outras':
                                     cores_da_bandeira.append(cor)
 
+# CAPITAL
+
+for continente in DADOS:
+                for pais in DADOS[continente] :
+                    if pais == escolhido:
+                        capital = DADOS[continente][pais]["capital"]
+
+#ÁREA
+
+for continente in DADOS:
+                for pais in DADOS[continente] :
+                    if pais == escolhido:
+                        area = DADOS[continente][pais]["area"]
+
+#POPULAÇÃO
+
+for continente in DADOS:
+                for pais in DADOS[continente] :
+                    if pais == escolhido:
+                        pop = DADOS[continente][pais]["populacao"]
+
+#CONTINENTE
+
+for continente in DADOS:
+                for pais in DADOS[continente] :
+                    if pais == escolhido:
+                        cont = continente
+
+#LAT/LONG PAÍS SORTEADO
+
+for continente in DADOS:
+    for pais in DADOS[continente]:
+        if pais == escolhido:
+            for geo,cords in DADOS[continente][pais]['geo'].items():
+                if geo == 'latitude':
+                    latitude_escolhido = cords
+                if geo == 'longitude':
+                    longitude_escolhido = cords
+                
+#LAT/LONG PAÍS DO PALPITE
+
+for continente in DADOS:
+    for pais in DADOS[continente]:
+        if pais == palpite:
+            for geo,cords in DADOS[continente][pais]['geo'].items():
+                if geo == 'latitude':
+                    latitude_palpite = cords
+                if geo == 'longitude':
+                    longitude_palpite = cords
+
+#DISTÂNCIA
+
+dist = haversine(EARTH_RADIUS,latitude_escolhido,longitude_escolhido,latitude_palpite,longitude_palpite)
+print(f'Distância: {dist:.3f} km')
+print(escolhido)
+
 #LOOP
 while tentativas > 0:
     if palpite not in dic_normalizado and palpite != 'dica':
@@ -48,7 +104,7 @@ while tentativas > 0:
         if dica_escolhida == 0:
             print('')
     #DICA 1
-        if dica_escolhida == 1:
+        if dica_escolhida == 1 and tentativas>0:
             while dica_escolhida == 1:
                 if cores_da_bandeira == []:
                     print('Todas as cores já foram listadas!')
@@ -64,37 +120,75 @@ while tentativas > 0:
                 print(f'Tentativas: {tentativas}')
                 break
     #DICA 2
-        if dica_escolhida == 2:
-            for continente in DADOS:
-                for pais in DADOS[continente] :
-                    if pais == escolhido:
-                        capital = DADOS[continente][pais]["capital"]
-                        print(random.choice(capital))
-                        tentativas -= 3
-                        print(f'Tentativas: {tentativas}')
+        if dica_escolhida == 2 and tentativas>0:
+            while dica_escolhida == 2:
+                letra_sorteada = sorteia_letra(capital,proibido)
+                proibido += letra_sorteada
+                print(capital)
+                if len(letras_capital) == len(capital):
+                    print('Todas as letras já foram dadas!\n')
+                    print(f'- Letras da Capital: {letras_da_capital_str}\n')
+                    print(f'Tentativas: {tentativas}')
+                    break
+                if letra_sorteada not in letras_capital:
+                    letras_capital.append(letra_sorteada)
+                letras_da_capital_str = ', '.join(letras_capital)
+                print(f'- Letras da Capital: {letras_da_capital_str}\n')
+                tentativas -= 3
+                print(f'Tentativas: {tentativas}')
+                break
     #DICA 3
         if dica_escolhida == 3:
             for continente in DADOS:
                 for pais in DADOS[continente] :
                     if pais == escolhido:
-                        print(DADOS[continente][pais]["area"])
+                        area = DADOS[continente][pais]["area"]
+                        print(f'Área: {area}')
+                        tentativas -= 6
+                        print(f'Tentativas: {tentativas}')
     #DICA 4
         if dica_escolhida == 4:
             for continente in DADOS:
                 for pais in DADOS[continente] :
                     if pais == escolhido:
-                        print(DADOS[continente][pais]["populacao"])
+                        pop = DADOS[continente][pais]["populacao"]
+                        print(f'População: {pop}')
+                        tentativas -= 5
+                        print(f'Tentativas: {tentativas}')
     #DICA 5
         if dica_escolhida == 5:
             for continente in DADOS:
                 for pais in DADOS[continente] :
                     if pais == escolhido:
-                        print(continente)
+                        print(f'Continente: {continente}')
+                        tentativas -= 7
+                        print(f'Tentativas: {tentativas}')
+    
+    #print(f'- {cores_usadas_str}\n')
+    #print(random.choice(capital))
+    #print(f'Área: {area}')
+    #print(f'População: {pop}')
+    #print(f'Continente: {continente}')
+
+    if palpite == escolhido:
+        print('Muito Bem!')
+        break
+
+    if palpite == 'desisto':
+        desistir = str(input('Tem certeza que deseja desistir da rodada? [s|n] '))
+        if desistir == 's':
+            print(f'>>> Que deselegante desistir, o país era: {escolhido}')
+            break
+        if desistir == 'n':
+            print('')
 
     palpite = str(input('Qual seu palpite? ')).lower().strip()
+    tentativas -= 1
+    print(f'Tentativas: {tentativas}')
 
-print('Suas tentativas acabaram :(')
-print(f'O país sorteado era {escolhido}\n')
+if tentativas == 0 or tentativas < 0:
+    print('Suas tentativas acabaram :(')
+    print(f'O país sorteado era {escolhido}\n')
 
 fim_jogo = str(input('Deseja jogar novamente? [s/n] '))
 if fim_jogo == 's':
