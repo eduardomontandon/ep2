@@ -24,9 +24,21 @@ a = 0
 #FUNÇÕES
 dic_normalizado = normaliza(DADOS)
 escolhido = sorteia_pais(dic_normalizado)
+
+#BANDEIRA
+
+for continente in DADOS:
+                for pais in DADOS[continente]:
+                    if pais == escolhido:
+                        for cor,num in DADOS[continente][pais]['bandeira'].items():
+                            if num > 0 :
+                                if cor != 'outras':
+                                    cores_da_bandeira.append(cor)
+
 #LOOP
 while tentativas > 0:
-    if palpite not in dic_normalizado:
+    print(cores_da_bandeira)
+    if palpite not in dic_normalizado and palpite != 'dica':
         print('')
         print('país desconhecido')
     if palpite == 'dica'.lower().strip():
@@ -36,22 +48,20 @@ while tentativas > 0:
         if dica_escolhida == 0:
             print('')
         if dica_escolhida == 1:
-            for continente in DADOS:
-                for pais in DADOS[continente]:
-                    if pais == escolhido:
-                        for cor,num in DADOS[continente][pais]['bandeira'].items():
-                            if num > 0 :
-                                if cor != 'outras':
-                                    cores_da_bandeira.append(cor)
             while dica_escolhida == 1:
+                if cores_da_bandeira == []:
+                    print('Todas as cores já foram listadas!')
+                    print(f'- {cores_usadas_str}\n')
+                    print(f'Tentativas: {tentativas}')
+                    break
                 cor_sorteada = random.choice(cores_da_bandeira)
                 cores_usadas.append(cor_sorteada)
                 cores_da_bandeira.remove(cor_sorteada)
-                if cores_da_bandeira == []:
-                    print('Todas as cores já foram listadas!')
-                print(f'- {cores_usadas}')
+                cores_usadas_str=', '.join(cores_usadas)
+                print(f'- {cores_usadas_str}\n')
+                tentativas -= 4 
+                print(f'Tentativas: {tentativas}')
                 break
-        'achar cor da bandeira'
         if dica_escolhida == 2:
             'sortear letras da capital'
         if dica_escolhida == 3:
