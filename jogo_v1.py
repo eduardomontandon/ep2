@@ -15,16 +15,21 @@ print('          desisto  - desiste da rodada\n')
 print('Um país foi escolhido, tente adivinhar!')
 print('Você tem 20 tentativas!\n')
 
-palpite = str(input('Qual seu palpite? ')).lower().strip()
 tentativas = 20
 cores_da_bandeira = []
 cores_usadas = []
 letras_capital = []
 proibido = ['.', ',', '-', ';', ' ']
+lista = []
+distancias_dadas = []
+i = 0
 #FUNÇÕES
 dic_normalizado = normaliza(DADOS)
 escolhido = sorteia_pais(dic_normalizado)
 
+palpite = str(input('Qual seu palpite? ')).lower().strip()
+if palpite in dic_normalizado:
+    tentativas -= 1
 #BANDEIRA
 
 for continente in DADOS:
@@ -63,39 +68,44 @@ for continente in DADOS:
                     if pais == escolhido:
                         cont = continente
 
-#LAT/LONG PAÍS SORTEADO
-
-for continente in DADOS:
-    for pais in DADOS[continente]:
-        if pais == escolhido:
-            for geo,cords in DADOS[continente][pais]['geo'].items():
-                if geo == 'latitude':
-                    latitude_escolhido = cords
-                if geo == 'longitude':
-                    longitude_escolhido = cords
-                
-#LAT/LONG PAÍS DO PALPITE
-
-for continente in DADOS:
-    for pais in DADOS[continente]:
-        if pais == palpite:
-            for geo,cords in DADOS[continente][pais]['geo'].items():
-                if geo == 'latitude':
-                    latitude_palpite = cords
-                if geo == 'longitude':
-                    longitude_palpite = cords
-
-#DISTÂNCIA
-
-dist = haversine(EARTH_RADIUS,latitude_escolhido,longitude_escolhido,latitude_palpite,longitude_palpite)
-print(f'Distância: {dist:.3f} km')
-print(escolhido)
-
 #LOOP
 while tentativas > 0:
     if palpite not in dic_normalizado and palpite != 'dica':
         print('')
         print('país desconhecido')
+    #DISTÂNCIA
+
+    if palpite in dic_normalizado:
+
+        #LAT/LONG PAÍS DO PALPITE
+
+        for continente in DADOS:
+            for pais in DADOS[continente]:
+                if pais == palpite:
+                    for geo,cords in DADOS[continente][pais]['geo'].items():
+                        if geo == 'latitude':
+                            latitude_palpite = cords
+                        if geo == 'longitude':
+                            longitude_palpite = cords
+
+        #LAT/LONG PAÍS SORTEADO
+
+        for continente in DADOS:
+            for pais in DADOS[continente]:
+                if pais == escolhido:
+                    for geo,cords in DADOS[continente][pais]['geo'].items():
+                        if geo == 'latitude':
+                            latitude_escolhido = cords
+                        if geo == 'longitude':
+                            longitude_escolhido = cords
+        dist = haversine(EARTH_RADIUS,latitude_escolhido,longitude_escolhido,latitude_palpite,longitude_palpite)
+        lista.append([palpite,dist] )
+        lista_ordenada = adiciona_em_ordem(palpite,dist,lista)
+        distancias_dadas.append(dist)
+        print('Distâncias: ')
+        print(f'{palpite}: {distancias_dadas[i]:.3f} km')
+        print('')
+        print(f'Tentaivas: {tentativas}')
     if palpite == 'dica'.lower().strip():
         print('----------------------------------------\n 1. Cor da bandeira  - custa 4 tentativas\n 2. Letra da capital - custa 3 tentativas\n 3. Área             - custa 6 tentativas\n 4. População        - custa 5 tentativas\n 5. Continente       - custa 7 tentativas\n 0. Sem dica\n ----------------------------------------')
         dica_escolhida = int(input('Escolha sua opção [0|1|2|3|4|5]: '))
@@ -163,6 +173,7 @@ while tentativas > 0:
                         print(f'Continente: {continente}')
                         tentativas -= 7
                         print(f'Tentativas: {tentativas}')
+    i += 1
     
     #print(f'- {cores_usadas_str}\n')
     #print(random.choice(capital))
