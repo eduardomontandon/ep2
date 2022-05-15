@@ -13,9 +13,9 @@ print('          dica     - entra no mercado de dicas')
 print('          desisto  - desiste da rodada\n')
 
 print('Um país foi escolhido, tente adivinhar!')
-print('Você tem 20 tentativas!\n')
+print('Você tem 30 tentativas!\n')
 
-tentativas = 20
+tentativas = 30
 cores_da_bandeira = []
 cores_usadas = []
 letras_capital = []
@@ -73,6 +73,7 @@ while tentativas > 0:
     if palpite not in dic_normalizado and palpite != 'dica':
         print('')
         print('país desconhecido')
+        tentativas += 1
     #DISTÂNCIA
 
     if palpite in dic_normalizado:
@@ -99,11 +100,11 @@ while tentativas > 0:
                         if geo == 'longitude':
                             longitude_escolhido = cords
         dist = haversine(EARTH_RADIUS,latitude_escolhido,longitude_escolhido,latitude_palpite,longitude_palpite)
-        lista.append([palpite,dist] )
-        lista_ordenada = adiciona_em_ordem(palpite,dist,lista)
-        distancias_dadas.append(dist)
+        #lista.append([palpite,dist] )
+        #lista_ordenada = adiciona_em_ordem(palpite,dist,lista)
+        #distancias_dadas.append(dist)
         print('Distâncias: ')
-        print(f'{palpite}: {distancias_dadas[i]:.3f} km')
+        print(f'{palpite}: {dist:.3f} km')
         print('')
         print(f'Tentaivas: {tentativas}')
     if palpite == 'dica'.lower().strip():
@@ -114,7 +115,7 @@ while tentativas > 0:
         if dica_escolhida == 0:
             print('')
     #DICA 1
-        if dica_escolhida == 1 and tentativas>0:
+        if dica_escolhida == 1 and tentativas > 0:
             while dica_escolhida == 1:
                 if cores_da_bandeira == []:
                     print('Todas as cores já foram listadas!')
@@ -130,11 +131,10 @@ while tentativas > 0:
                 print(f'Tentativas: {tentativas}')
                 break
     #DICA 2
-        if dica_escolhida == 2 and tentativas>0:
+        if dica_escolhida == 2 and tentativas > 0:
             while dica_escolhida == 2:
                 letra_sorteada = sorteia_letra(capital,proibido)
                 proibido += letra_sorteada
-                print(capital)
                 if len(letras_capital) == len(capital):
                     print('Todas as letras já foram dadas!\n')
                     print(f'- Letras da Capital: {letras_da_capital_str}\n')
@@ -174,16 +174,16 @@ while tentativas > 0:
                         tentativas -= 7
                         print(f'Tentativas: {tentativas}')
     i += 1
-    
-    #print(f'- {cores_usadas_str}\n')
-    #print(random.choice(capital))
-    #print(f'Área: {area}')
-    #print(f'População: {pop}')
-    #print(f'Continente: {continente}')
 
     if palpite == escolhido:
         print('Muito Bem!')
         break
+
+    if tentativas == 0 or tentativas < 0:
+        print('Suas tentativas acabaram :(')
+        print(f'O país sorteado era {escolhido}\n')
+        break
+
 
     if palpite == 'desisto':
         desistir = str(input('Tem certeza que deseja desistir da rodada? [s|n] '))
@@ -203,6 +203,6 @@ if tentativas == 0 or tentativas < 0:
 
 fim_jogo = str(input('Deseja jogar novamente? [s/n] '))
 if fim_jogo == 's':
-    'jogar denovo'
+    'jogar dnv'
 if fim_jogo == 'n':
     print('Até a próxima!')
